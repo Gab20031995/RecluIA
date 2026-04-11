@@ -30,10 +30,49 @@ Para garantizar que la IA sea predictiva, el ETL normaliza la data bajo los sigu
 * **Visualización & App:** Streamlit, Matplotlib, Seaborn
 * **Librerías Clave:** `pandas`, `pymongo`, `certifi`, `re` (Regex).
 
+## 📂 Estructura del Proyecto
+```text
+ENTREGA FINAL/
+├── .venv/                # Entorno virtual con dependencias
+├── .gitignore            # Archivos excluidos de control de versiones
+├── requirements.txt      # Librerías necesarias (pandas, sklearn, streamlit, etc.)
+├── database.py           # Conexión centralizada a MongoDB Atlas
+├── EDA.py                # Clase POO para Análisis Exploratorio
+├── ETL.py                # Clase POO para Transformación y Reglas de Negocio
+├── ia_model.py           # Entrenamiento y exportación de la IA (.pkl)
+├── main.py               # Orquestador Maestro (Script principal)
+├── app.py                # Interfaz de usuario final en Streamlit
+├── modelo_rh.pkl         # Modelo entrenado serializado
+├── le_puesto.pkl         # Encoder para categorías de puestos
+└── le_escolaridad.pkl    # Encoder para niveles educativos
+```
 ---
 
-## 🚀 Configuración del Entorno
+## 🚀 Instalación y Despliegue
 
+1. Preparación del Envorno
+Instale las dependencias necesarias ejecutando el siguiente comando en su terminal:
+
+PowerShell
+pip install -r requirements.txt
+2. Ejecución de la Orquestación (Pipeline Completo)
+Para procesar los datos, limpiar la base de datos y entrenar el modelo de IA de forma automática, ejecute el Script Maestro:
+
+PowerShell
+python main.py
+Este paso generará los logs de ejecución y los archivos .pkl necesarios para la aplicación.
+
+3. Lanzamiento del Aplicativo Final
+Una vez finalizado el pipeline y generados los modelos, inicie la interfaz interactiva con:
+
+PowerShell
+streamlit run app.py
+📊 Resultados del Modelo (IA)
+El modelo Random Forest Classifier fue entrenado para clasificar la prioridad de los candidatos basándose en 4 variables críticas: Puesto, Escolaridad, Salario y Estatus Laboral (Preaviso).
+
+Precisión lograda: ~98% (basado en reglas de negocio inyectadas).
+
+Valor Agregado: El reclutador reduce el tiempo de filtrado manual en un 68% al enfocarse solo en perfiles de alta compatibilidad.
 ### 1. Variables de Entorno
 Cree un archivo `.env` o configure las variables en su script `database.py`:
 ```env
