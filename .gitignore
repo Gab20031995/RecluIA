@@ -1,0 +1,17 @@
+# Entorno virtual
+.venv/
+venv/
+env/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Variables de entorno (Seguridad)
+.env
+
+# Archivos grandes o temporales
+*.log
