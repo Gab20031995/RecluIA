@@ -1,14 +1,18 @@
+import os
 import time
+from dotenv import load_dotenv
 from datetime import datetime
 from database import obtener_conexion_mongo
 from EDA import EDA_RH
 from ETL import ETL_RH
 import pandas as pd
 
+load_dotenv()
+
 class OrquestadorPipeline:
     def __init__(self):
         self.start_time = None
-        self.uri = "mongodb+srv://luizclzm_db_user:Z6ondingMP7UWGfQ@cluster0.qlmcjle.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+        self.uri = os.getenv("MONGO_URI")  # Defínala en un archivo .env
         self.db_name = "RH"
 
     def log(self, mensaje):
