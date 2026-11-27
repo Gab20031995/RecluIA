@@ -1,82 +1,80 @@
-# 🎯 Recruitment Predictive Pipeline - FIFCO Retail Case
-**Curso:** Administración de Bases de Datos  
-**Profesor:** Alejandro Zamora  
-**Desarrollado por:** Gabriel Corrales / Jafet Rojas / Luis Rojas  
+# RecluIA: pipeline de datos e IA para priorizar candidatos en reclutamiento retail
 
----
+Pipeline ETL de extremo a extremo y modelo de clasificación que ayuda a un equipo de reclutamiento masivo a enfocarse primero en los candidatos que cumplen los requisitos del puesto.
 
-## 📌 Descripción del Proyecto
-Este proyecto implementa un pipeline de datos (ETL) de extremo a extremo y un modelo de Inteligencia Artificial para la automatización y priorización del reclutamiento masivo en el sector Retail. El flujo está diseñado para transformar datos crudos de aplicaciones laborales en una herramienta predictiva que asiste a los reclutadores en la toma de decisiones basada en reglas de negocio reales.
+**Curso:** Administración de Bases de Datos · **Profesor:** Alejandro Zamora
+**Equipo:** Gabriel Corrales, Jafet Rojas, Luis Rojas
 
-## 🏗️ Arquitectura del Pipeline
-El sistema se divide en tres fases principales siguiendo una arquitectura de capas (Medallion Architecture):
+## El problema
 
-1.  **Extract & Raw (Capa Bronce):** Extracción de más de 41,000 registros desde **MongoDB Atlas**. En esta fase se identifica la data "sucia", incluyendo duplicados masivos y errores de formato (como cédulas en notación científica).
-2.  **Transform & Curated (Capa Plata):** Procesamiento mediante la clase `ETL_RH`. Se eliminan duplicados (-68% de ruido), se normalizan los IDs y se inyectan **Reglas de Negocio** (salarios por escolaridad, requisitos de puesto y certificaciones). Los datos limpios se cargan en la colección `RH_curada`.
-3.  **IA & Application (Capa Oro):** Entrenamiento de un modelo de clasificación **Random Forest** que predice la idoneidad del candidato. El resultado se despliega en una interfaz interactiva con **Streamlit**.
+En reclutamiento masivo de retail llegan miles de aplicaciones con datos sucios: duplicados, formatos inconsistentes y cédulas guardadas en notación científica. Filtrarlas a mano consume la mayor parte del tiempo del reclutador.
 
----
+## Resultados
 
-## 🛠️ Reglas de Negocio Implementadas
-Para garantizar que la IA sea predictiva, el ETL normaliza la data bajo los siguientes criterios de FIFCO:
-* **Validación Salarial:** Topes máximos según escolaridad (ej. Primaria ₡400k, Universidad ₡700k).
-* **Filtros Críticos:** Manipulación de alimentos obligatoria y nivel académico mínimo (Bachillerato) para puestos administrativos.
-* **Gestión de Disponibilidad:** Análisis de candidatos laborando actualmente para cálculo de preaviso.
+- **Limpieza:** de más de 41.000 registros crudos se eliminó un 68 % de duplicados y ruido, lo que reduce en esa proporción el volumen que el reclutador debe revisar.
+- **Priorización:** un modelo Random Forest clasifica a cada candidato según su compatibilidad con el puesto usando 4 variables: puesto, escolaridad, aspiración salarial y estatus laboral (preaviso).
+- **Herramienta:** una app en Streamlit donde el reclutador consulta la prioridad de los candidatos.
 
-## 🛠️ Tecnologías Utilizadas
-* **Lenguaje:** Python 3.10+
-* **Base de Datos:** MongoDB Atlas (NoSQL)
-* **IA / Machine Learning:** Scikit-Learn (Random Forest), Joblib
-* **Visualización & App:** Streamlit, Matplotlib, Seaborn
-* **Librerías Clave:** `pandas`, `pymongo`, `certifi`, `re` (Regex).
+> **Nota sobre la precisión (~98 %).** Las etiquetas de entrenamiento se construyeron a partir de las mismas reglas de negocio que usa el ETL. Por eso la precisión alta indica que el modelo **replica fielmente esas reglas de priorización**, no que prediga el desempeño futuro del candidato. Un siguiente paso sería entrenarlo con resultados reales de contratación (por ejemplo, permanencia a 3 meses).
 
-## 📂 Estructura del Proyecto
-```text
-ENTREGA FINAL/
-├── .venv/                # Entorno virtual con dependencias
-├── .gitignore            # Archivos excluidos de control de versiones
-├── requirements.txt      # Librerías necesarias (pandas, sklearn, streamlit, etc.)
-├── database.py           # Conexión centralizada a MongoDB Atlas
-├── EDA.py                # Clase POO para Análisis Exploratorio
-├── ETL.py                # Clase POO para Transformación y Reglas de Negocio
-├── ia_model.py           # Entrenamiento y exportación de la IA (.pkl)
-├── main.py               # Orquestador Maestro (Script principal)
-├── app.py                # Interfaz de usuario final en Streamlit
-├── modelo_rh.pkl         # Modelo entrenado serializado
-├── le_puesto.pkl         # Encoder para categorías de puestos
-└── le_escolaridad.pkl    # Encoder para niveles educativos
+## Arquitectura (Medallion)
+
+1. **Bronce (extracción):** carga de los registros crudos desde MongoDB Atlas e identificación de datos sucios.
+2. **Plata (transformación):** la clase `ETL_RH` elimina duplicados, normaliza identificaciones y aplica las reglas de negocio. Los datos limpios se guardan en la colección `RH_curada`.
+3. **Oro (IA y aplicación):** entrenamiento del modelo y despliegue en Streamlit.
+
+## Reglas de negocio aplicadas
+
+- **Validación salarial:** topes de aspiración salarial según escolaridad.
+- **Filtros críticos:** manipulación de alimentos obligatoria y bachillerato como mínimo para puestos administrativos.
+- **Disponibilidad:** identificación de candidatos que trabajan actualmente, para estimar el preaviso.
+
+## Tecnologías
+
+Python 3.10+ · MongoDB Atlas · pandas · pymongo · scikit-learn (Random Forest) · joblib · Streamlit · Matplotlib · Seaborn
+
+## Estructura
+
 ```
----
+├── database.py        # Conexión a MongoDB (lee MONGO_URI del archivo .env)
+├── cargaMogoDB.py     # Ingesta del Excel crudo a MongoDB (capa bronce)
+├── EDA.py             # Clase para análisis exploratorio
+├── ETL.py             # Clase para transformación y reglas de negocio
+├── ia_model.py        # Entrenamiento y exportación del modelo
+├── main.py            # Orquestador del pipeline completo
+├── app.py             # Interfaz en Streamlit
+├── eda_etl_RH.ipynb   # Notebook de exploración
+└── requirements.txt
+```
 
-## 🚀 Instalación y Despliegue
+## Cómo ejecutarlo
 
-1. Preparación del Envorno
-Instale las dependencias necesarias ejecutando el siguiente comando en su terminal:
+1. Instale las dependencias:
 
-PowerShell
-pip install -r requirements.txt
-2. Ejecución de la Orquestación (Pipeline Completo)
-Para procesar los datos, limpiar la base de datos y entrenar el modelo de IA de forma automática, ejecute el Script Maestro:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-PowerShell
-python main.py
-Este paso generará los logs de ejecución y los archivos .pkl necesarios para la aplicación.
+2. Cree un archivo `.env` en la raíz del proyecto (está excluido de Git) con su propia conexión:
 
-3. Lanzamiento del Aplicativo Final
-Una vez finalizado el pipeline y generados los modelos, inicie la interfaz interactiva con:
+   ```
+   MONGO_URI=mongodb+srv://USUARIO:CONTRASEÑA@SU-CLUSTER.mongodb.net/
+   ```
 
-PowerShell
-streamlit run app.py
-📊 Resultados del Modelo (IA)
-El modelo Random Forest Classifier fue entrenado para clasificar la prioridad de los candidatos basándose en 4 variables críticas: Puesto, Escolaridad, Salario y Estatus Laboral (Preaviso).
+3. Ejecute el pipeline completo (limpieza, carga y entrenamiento):
 
-Precisión lograda: ~98% (basado en reglas de negocio inyectadas).
+   ```bash
+   python main.py
+   ```
 
-Valor Agregado: El reclutador reduce el tiempo de filtrado manual en un 68% al enfocarse solo en perfiles de alta compatibilidad.
-### 1. Variables de Entorno
-Cree un archivo `.env` o configure las variables en su script `database.py`:
-```env
-MONGO_URI="mongodb+srv://luizclzm_db_user:Z6ondingMP7UWGfQ@cluster0.qlmcjle.mongodb.net/"
-DB_NAME="RH"
-RAW_COLLECTION="RH"
-CURATED_COLLECTION="RH_curada"
+4. Inicie la aplicación:
+
+   ```bash
+   streamlit run app.py
+   ```
+
+## Próximos pasos
+
+- Entrenar con resultados reales de contratación en lugar de etiquetas derivadas de reglas.
+- Agregar métricas por clase (precisión y recall) y una comparación contra un filtro por reglas simple.
+- Agregar un dashboard con indicadores del embudo de reclutamiento.
