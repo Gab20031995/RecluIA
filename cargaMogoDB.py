@@ -1,10 +1,14 @@
+import os
 import pandas as pd
+from dotenv import load_dotenv
 from pymongo import MongoClient
 import datetime
 import certifi
 
+load_dotenv()
+
 # --- CONFIGURACIÓN (Requisito: Conexión Real) ---
-MONGO_URI = "mongodb+srv://luizclzm_db_user:Z6ondingMP7UWGfQ@cluster0.qlmcjle.mongodb.net/?appName=Cluster0"
+MONGO_URI = os.getenv("MONGO_URI")  # Defínala en un archivo .env (ver .env.example)
 DB_NAME = "RH"
 COLLECTION_NAME = "RH"
 
