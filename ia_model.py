@@ -1,6 +1,10 @@
+import os
 import pandas as pd
+from dotenv import load_dotenv
 from pymongo import MongoClient
 import certifi
+
+load_dotenv()
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
@@ -12,7 +16,7 @@ def entrenar_modelo_ia():
     
     # 1. Carga de datos desde Capa Curada
     # IMPORTANTE: Ahora usamos la data que ya pasó por las reglas del ETL
-    client = MongoClient("mongodb+srv://luizclzm_db_user:Z6ondingMP7UWGfQ@cluster0.qlmcjle.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", tlsCAFile=certifi.where())
+    client = MongoClient(os.getenv("MONGO_URI"), tlsCAFile=certifi.where())
     df = pd.DataFrame(list(client["RH"]["RH_curada"].find()))
     client.close()
 
